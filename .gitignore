@@ -1,0 +1,22 @@
+# Dataset — quá lớn, không đưa lên git
+voice_search_project/data/raw/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Claude memory (nội bộ, không cần push)
+memory/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Môi trường ảo
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
