@@ -1,6 +1,9 @@
 # Dataset — quá lớn, không đưa lên git
 voice_search_project/data/raw/
 
+# Database binary file
+*.db
+
 # Python cache
 __pycache__/
 *.py[cod]
