@@ -1,5 +1,9 @@
 # Dataset — quá lớn, không đưa lên git
 voice_search_project/data/raw/
+voice_search_project/data/data_clean/
+
+# Claude config
+.claude/
 
 # Database binary file
 *.db

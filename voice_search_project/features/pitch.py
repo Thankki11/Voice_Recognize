@@ -1,7 +1,4 @@
-"""
-Fundamental frequency (F0) extraction using librosa's pyin algorithm.
-Handles edge cases: silence, unvoiced frames, very short audio.
-"""
+
 
 import numpy as np
 import librosa
@@ -14,15 +11,7 @@ def extract_pitch(
     fmax: float = 600.0,
     hop_length: int = 512,
 ) -> dict:
-    """
-    Returns F0 statistics over voiced frames only:
-      f0_mean, f0_std, f0_min, f0_max : Hz (NaN if no voiced frames found)
-      voiced_ratio                     : fraction of voiced frames
-      f0_frames                        : (T,) raw F0 array (0.0 = unvoiced)
-    Edge cases handled:
-      - all-silence / no voiced frames → stats = NaN, voiced_ratio = 0
-      - audio shorter than one analysis frame → returns empty stats
-    """
+    
     if len(y) < 2048:
         return _empty_result(np.array([]))
 

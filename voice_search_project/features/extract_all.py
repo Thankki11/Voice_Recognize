@@ -15,6 +15,7 @@ import sys
 import csv
 import numpy as np
 import librosa
+import soundfile as sf
 from pathlib import Path
 from tqdm import tqdm
 
@@ -26,11 +27,12 @@ from features.pitch import extract_pitch
 from features.time_domain import extract_time_domain
 from features.voice_quality import extract_voice_quality
 
-DATA_STORE = PROJECT_ROOT / "data" / "raw" / "data_store"
-OUT_CSV    = PROJECT_ROOT / "features" / "segments_all.csv"
-N_MFCC     = 13
-HOP_LENGTH = 512
-FRAME_LEN  = 2048
+DATA_STORE     = PROJECT_ROOT / "data" / "raw" / "data_store"
+PROCESSED_DIR  = PROJECT_ROOT / "data" / "data_clean" / "data_store"
+OUT_CSV        = PROJECT_ROOT / "features" / "segments_all.csv"
+N_MFCC         = 13
+HOP_LENGTH     = 512
+FRAME_LEN      = 2048
 
 _PAT = re.compile(r"^arctic_a(\d+)(?:\((\d+)\))?\.wav$", re.IGNORECASE)
 
@@ -91,7 +93,12 @@ def extract_features(y: np.ndarray, sr: int) -> dict:
     return row
 
 
-def run(data_dir: Path = DATA_STORE, out_csv: Path = OUT_CSV):
+def run(
+    data_dir: Path = DATA_STORE,
+    out_csv: Path = OUT_CSV,
+    save_processed: bool = True,
+    processed_dir: Path = PROCESSED_DIR,
+):
     wav_files = sorted(data_dir.rglob("*.wav"))
     if not wav_files:
         print(f"No WAV files found in {data_dir}")
@@ -126,6 +133,13 @@ def run(data_dir: Path = DATA_STORE, out_csv: Path = OUT_CSV):
                 skipped += 1
                 continue
 
+            # Luu file WAV da lam sach (giu nguyen cau truc thu muc)
+            if save_processed:
+                rel_path = wav_path.relative_to(data_dir)
+                out_wav  = processed_dir / rel_path
+                out_wav.parent.mkdir(parents=True, exist_ok=True)
+                sf.write(str(out_wav), y, sr)
+
             feats = extract_features(y, sr)
 
             row = {
@@ -140,6 +154,8 @@ def run(data_dir: Path = DATA_STORE, out_csv: Path = OUT_CSV):
             total += 1
 
     print(f"\nDone. {total} files -> {out_csv}")
+    if save_processed:
+        print(f"Cleaned WAV files saved to: {processed_dir}")
     if skipped:
         print(f"Skipped: {skipped} files")
 
